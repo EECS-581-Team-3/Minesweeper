@@ -9,6 +9,7 @@ class GameLogic:
         self.revealed_safe_cells: int = 0
         self.total_safe_cells: int = self.board_mgr.grid_size ** 2 - self.board_mgr.mine_count
         self.flags_placed: int = 0
+        self.did_win: bool = False
 
     def reset_game(self, mine_count: int):
         self.board_mgr.reset(mine_count)
@@ -17,6 +18,7 @@ class GameLogic:
         self.revealed_safe_cells = 0
         self.flags_placed = 0
         self.total_safe_cells = self.board_mgr.grid_size ** 2 - self.board_mgr.mine_count
+        self.did_win = False
 
     def toggle_flag(self, row: int, col: int) -> int:
         if self.is_game_over:
@@ -28,7 +30,12 @@ class GameLogic:
             return 0
         cell.has_flag = not cell.has_flag
         self.flags_placed += 1 if cell.has_flag else -1
+        if self.flags_placed == self.board_mgr.mine_count and self._all_mines_flagged():
+            self.is_game_over = True
+            self.did_win = True
         return 1 if cell.has_flag else -1
+    
+
 
     def reveal_cell(self, row: int, col: int) -> List[Tuple[int, int]]:
         if self.is_game_over:
@@ -44,6 +51,7 @@ class GameLogic:
 
         if cell.has_mine:
             self.is_game_over = True
+            self.did_win = False
             return [(row, col)]
 
         newly_revealed = []
@@ -51,7 +59,18 @@ class GameLogic:
 
         if self.revealed_safe_cells >= self.total_safe_cells and not self.is_game_over:
             self.is_game_over = True
+            self.did_win = True
+
         return newly_revealed
+    
+    def _all_mines_flagged(self) -> bool:
+        n = self.board_mgr.grid_size
+        for r in range(n):
+            for c in range(n):
+                cell = self.board_mgr.get_cell(r, c)
+                if cell.has_mine != cell.has_flag:
+                    return False
+        return True
     
     def _flood_reveal(self, row: int, col: int, out_list: List[Tuple[int, int]]):
         stack = [(row, col)]

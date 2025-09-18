@@ -13,21 +13,42 @@ class BoardManager:
         self.mine_count = mine_count
         self.grid = [[Cell() for _ in range(grid_size)] for _ in range(grid_size)]
     
+    # def place_mines(self, safe_row: int, safe_col: int):
+    #     # all possible coordinates except the first clicked cell
+    #     all_coords = [
+    #         (r, c)
+    #         for r in range(self.grid_size)
+    #         for c in range(self.grid_size)
+    #         if not (r == safe_row and c == safe_col)
+    #     ]
+    #     mine_coords = random.sample(all_coords, self.mine_count)
+    #     for r, c in mine_coords:
+    #         self.grid[r][c].has_mine = True
+    
+    #     for r in range(self.grid_size):
+    #         for c in range(self.grid_size):
+    #             self.grid[r][c].neighbor_count = self.count_adjacent_mines(r, c)
+
     def place_mines(self, safe_row: int, safe_col: int):
-        # all possible coordinates except the first clicked cell
+    # exclude the first-click cell and all of its neighbors
+        safe_zone = set(self.neighbors(safe_row, safe_col))
+        safe_zone.add((safe_row, safe_col))
+
         all_coords = [
             (r, c)
             for r in range(self.grid_size)
             for c in range(self.grid_size)
-            if not (r == safe_row and c == safe_col)
+            if (r, c) not in safe_zone
         ]
+        if self.mine_count > len(all_coords):
+            raise ValueError("mine_count too large for first-click safe zone")
+
         mine_coords = random.sample(all_coords, self.mine_count)
         for r, c in mine_coords:
             self.grid[r][c].has_mine = True
-    
-        for r in range(self.grid_size):
-            for c in range(self.grid_size):
-                self.grid[r][c].neighbor_count = self.count_adjacent_mines(r, c)
+
+        # precompute the numbers
+        self.compute_adjacent_mines()
 
 
     def get_cell(self, row: int, column: int):
