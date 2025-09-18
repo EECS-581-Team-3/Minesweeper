@@ -33,7 +33,7 @@ class GameGUI:
             messagebox.showinfo("Game Over", "You have hit a mine!")
             self.buttons[row][col].config(text='*', bg='red', font=('Arial', 10))
         else:
-            # Show the neighbor count including zero
+            # show neighbor count including zero
             self.buttons[row][col].config(text=str(cell.neighbor_count), bg='lightgray', font=('Arial', 10))
 
     def toggle_flag(self, row: int, col: int):
@@ -45,7 +45,7 @@ class GameGUI:
             self.buttons[row][col].config(text='🚩', font=('Arial', 10))
         else:
             self.buttons[row][col].config(text=' ', font=('Arial', 10))
-        # if win-by-flags happened, congratulate
+        # if win-by-flags happened, win!
         if self.game.is_game_over and self.game.did_win:
             messagebox.showinfo("You Win!", "All mines cleared!")
             self.endGame()
