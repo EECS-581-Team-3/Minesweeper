@@ -31,12 +31,12 @@ from typing import List, Tuple
 from cell import Cell
 import random
 
- """a square grid of Cell objects. Mines are
-    placed after the user’s first click so that the first cell—and its 8
-    neighbors are guaranteed safe, also computes per-cell neighbor mine counts."""
+#a square grid of Cell objects. Mines are
+#placed after the user’s first click so that the first cell—and its 8
+#neighbors are guaranteed safe, also computes per-cell neighbor mine counts."""
 class BoardManager:
-     """Inits an empty grid (no mines yet) of size grid_size×grid_size.
-        Mine count is stored for later placement via place_mines()."""
+     #Inits an empty grid (no mines yet) of size grid_size×grid_size.
+        #Mine count is stored for later placement via place_mines()."""
     def __init__(self, grid_size: int, mine_count: int):
         if grid_size <= 0:
             raise ValueError("grid_size must be positive")
@@ -49,8 +49,8 @@ class BoardManager:
         self.grid = [[Cell() for _ in range(grid_size)] for _ in range(grid_size)]
     
     def place_mines(self, safe_row: int, safe_col: int):
-        """randomly place mines while keeping the first-clicked cell and all of
-        its neighbors mine-free. After placement, compute neighbor counts."""
+        #randomly place mines while keeping the first-clicked cell and all of
+        #its neighbors mine-free. After placement, compute neighbor counts."""
         # all possible coordinates except the first clicked cell
         # exclude the first-click cell and all of its neighbors
         safe_zone = set(self.neighbors(safe_row, safe_col))
@@ -108,8 +108,8 @@ class BoardManager:
                 self.grid[r][c].neighbor_count = self.count_adjacent_mines(r,c)
 
     #reinits board, does not place mines
-    """clear the board to a fresh, mine-free state and update mine_count.
-        Mines are not placed here; call place_mines() after the first click."""
+    #clear the board to a fresh, mine-free state and update mine_count.
+        #Mines are not placed here; call place_mines() after the first click."""
     def reset(self, mine_count: int):
         if mine_count > self.grid_size * self.grid_size:
             raise ValueError(" mine_count too large ")
@@ -117,4 +117,5 @@ class BoardManager:
         # brand-new cells; neighbor counts will be recalculated after placement
         self.grid = [[Cell() for _ in range(self.grid_size)]
                      for _ in range(self.grid_size)]
+
 
